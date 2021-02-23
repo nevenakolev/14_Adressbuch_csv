@@ -6,6 +6,7 @@ public class Person {
     private String address;
     private String phoneNr;
 
+
     //Constructor
     public Person() {
         //do nothing
@@ -16,6 +17,7 @@ public class Person {
         this.address = address;
         this.phoneNr = phoneNr;
     }
+
 
     //Getter and Setter
     public String getName() {
@@ -42,9 +44,10 @@ public class Person {
         this.phoneNr = phoneNr;
     }
 
+
     //Methods
     @Override
     public String toString() {
-        return this.name + ";" + this.address + ";" + this.phoneNr + ";";
+        return this.name + ";" + this.address + ";" + this.phoneNr;
     }
 }
