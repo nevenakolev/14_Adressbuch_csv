@@ -3,6 +3,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import model.PhoneBook;
+import viewcontroller.Controller;
 
 import java.io.File;
 
@@ -13,7 +15,7 @@ import java.io.File;
 public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
-        //creates a file
+        //creates a file if it doesn't already exist
         File file = new File("src\\files\\Phonebook.csv");
         file.createNewFile();
 

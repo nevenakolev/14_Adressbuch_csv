@@ -1,11 +1,14 @@
 package model;
 
+import javafx.fxml.Initializable;
+
 import java.io.*;
 
+import java.net.URL;
+import java.sql.Array;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class PhoneBook {
     //Variables
@@ -47,9 +50,9 @@ public class PhoneBook {
      * This method creates a new person with the provided information and
      * adds it to the phonebook. The phonebook position will be updated.
      */
-    public int addContact(String name, String address, String phoneNr) {
-        if (!isInformationMissing(name, address, phoneNr)) {
-            phonebook.put(phonebook.size(), new Person(name, address, phoneNr));
+    public int addContact(String name, String address, String prefix, String phoneNr) {
+        if (!isInformationMissing(name, address, prefix, phoneNr)) {
+            phonebook.put(phonebook.size(), new Person(name, address, prefix, phoneNr));
             currentID = 0;
 
             return 0;
@@ -103,9 +106,9 @@ public class PhoneBook {
     /**
      * This method updates the changed information on the current index
      */
-    public void saveChanges(String name, String address, String phoneNr) {
-        if (!isInformationMissing(name, address, phoneNr))
-            phonebook.replace(currentID, new Person(name, address, phoneNr));
+    public void saveChanges(String name, String address, String prefix, String phoneNr) {
+        if (!isInformationMissing(name, address, prefix, phoneNr))
+            phonebook.replace(currentID, new Person(name, address, prefix, phoneNr));
         else
             printMessage("Please fill out all fields.");
     }
@@ -126,9 +129,9 @@ public class PhoneBook {
                 linecounter++;
 
                 String[] attributes = row.split(";");
-                if (attributes.length == 3) {
-                    if (!attributes[0].isBlank() && !attributes[1].isBlank() && !attributes[2].isBlank()) {
-                        addContact(attributes[0], attributes[1], attributes[2]); //0 = name, 1 = address, 2 = phoneNr
+                if (attributes.length == 4) {
+                    if (!attributes[0].isBlank() && !attributes[1].isBlank() && !attributes[2].isBlank() && !attributes[3].isBlank()) {
+                        addContact(attributes[0], attributes[1], attributes[2], attributes[3]); //0 = name, 1 = address, 2 = prefix, 3 = phone num
                         currentID++;
                     } else {
                         printMessage("An attribute is empty on line " + linecounter);
@@ -166,8 +169,8 @@ public class PhoneBook {
     /**
      * This method checks if all parameters are not null.
      */
-    public boolean isInformationMissing(String name, String address, String phoneNr) {
-        return name.equals("") || address.equals("") || phoneNr.equals("");
+    public boolean isInformationMissing(String name, String address, String prefix, String phoneNr) {
+        return name.equals("") || address.equals("") || prefix.equals("") || phoneNr.equals("");
     }
 
     /**
@@ -199,9 +202,43 @@ public class PhoneBook {
      * This method shows the first person in the phonebook.
      */
     public Person getFirstPerson() {
-        if (!phonebook.isEmpty())
+        if (!phonebook.isEmpty()) {
             return phonebook.get(0);
-        else
+        } else
             return null;
+    }
+
+    /**
+     * This method sorts the contacts alphabetically, updates the local
+     * phonebook and saves the changes into the csv file.
+     */
+    public void sortContacts() {
+        if (!phonebook.isEmpty()) {
+            HashMap<Integer, Person> sortedHashMap = new HashMap<>();
+
+            //saves all names into a list and sorts the list
+            ArrayList<String> nameList = new ArrayList<>();
+            for (Map.Entry entry : phonebook.entrySet()) {
+                Person p = (Person) entry.getValue();
+                nameList.add(p.getName());
+            }
+            Collections.sort(nameList);
+
+            int newId = 0;
+            for (String name : nameList) {
+                for (Map.Entry entry : phonebook.entrySet()) {
+                    Person p = (Person) entry.getValue();
+                    if (name.equals(p.getName())) {
+                        sortedHashMap.put(newId, (Person) entry.getValue());
+                        newId++;
+                    }
+                }
+            }
+
+            phonebook.clear();
+            phonebook = sortedHashMap;
+
+            saveToCsv();
+        }
     }
 }

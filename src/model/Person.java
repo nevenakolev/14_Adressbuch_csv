@@ -5,6 +5,7 @@ public class Person {
     private String name;
     private String address;
     private String phoneNr;
+    private String prefix;
 
 
     //Constructor
@@ -12,9 +13,10 @@ public class Person {
         //do nothing
     }
 
-    public Person(String name, String address, String phoneNr) {
+    public Person(String name, String address, String prefix, String phoneNr) {
         this.name = name;
         this.address = address;
+        this.prefix = prefix;
         this.phoneNr = phoneNr;
     }
 
@@ -44,10 +46,17 @@ public class Person {
         this.phoneNr = phoneNr;
     }
 
+    public String getPrefix() {
+        return this.prefix;
+    }
+
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
+    }
 
     //Methods
     @Override
     public String toString() {
-        return this.name + ";" + this.address + ";" + this.phoneNr;
+        return this.name + ";" + this.address + ";" + this.prefix + ";" + this.phoneNr;
     }
 }
